@@ -1,26 +1,92 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
+/* Dark mode is driven by a .dark class (added by next-themes) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* 1. Raw color values (light + dark) */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: hsl(50 33% 98%);
+  --foreground: hsl(24 14% 12%);
+  --card: hsl(0 0% 100%);
+  --border: hsl(30 14% 89%);
+  --muted: hsl(30 16% 95%);
+  --muted-foreground: hsl(25 8% 45%);
+  --primary: hsl(30 90% 48%);
+  --primary-foreground: hsl(0 0% 100%);
+  --accent: hsl(22 80% 96%);
+  --radius: 0.9rem;
 }
 
+.dark {
+  --background: hsl(24 16% 8%);
+  --foreground: hsl(40 22% 92%);
+  --card: hsl(24 14% 11%);
+  --border: hsl(28 10% 20%);
+  --muted: hsl(24 12% 16%);
+  --muted-foreground: hsl(30 8% 62%);
+  --primary: hsl(24 92% 55%);
+  --primary-foreground: hsl(24 16% 8%);
+  --accent: hsl(22 30% 18%);
+}
+
+/* 2. Register those vars as Tailwind tokens.
+      This replaces theme.extend from the old tailwind.config.js.
+      "inline" means utilities point at the live var, so dark mode just works. */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-card: var(--card);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 4px);
+  --radius-sm: calc(var(--radius) - 8px);
+
+  --shadow-soft: 0 2px 8px -2px rgb(0 0 0 / 0.08), 0 8px 24px -8px rgb(0 0 0 / 0.10);
+
+  --animate-fade-up: fade-up 0.5s ease-out both;
+  @keyframes fade-up {
+    0% { opacity: 0; transform: translateY(12px); }
+    100% { opacity: 1; transform: translateY(0); }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* 3. Base styles */
+@layer base {
+  /* v4's default border color is currentColor — restore our token */
+  * {
+    border-color: var(--border);
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+  }
+}
+
+
+@layer components {
+  .container {
+    width: 100%;
+    margin-inline: auto;
+    max-width: 72rem;          /* 1152px */
+    padding-inline: 1.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding-inline: 2rem;
+  }
 }
